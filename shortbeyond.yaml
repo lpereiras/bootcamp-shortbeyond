@@ -14,9 +14,9 @@ spec:
           hostPort: 5432
       env:
         - name: POSTGRES_USER
-          value: "dba"
+          value: ${{ secrets.DATABASE_USER }}
         - name: POSTGRES_PASSWORD
-          value: "dba"
+          value: ${{ secrets.DATABASE_PASSWORD }}
         - name: POSTGRES_DB
           value: "ShortDB"
         - name: TZ
@@ -35,12 +35,11 @@ spec:
         - name: PORT
           value: "3333"
         - name: DATABASE_URL
-          value: "postgres://dba:dba@localhost:5432/ShortDB?sslmode=disable"
+          value: "postgres://dba:{{ secrets.DATABASE_PASSWORD }}@localhost:5432/ShortDB?sslmode=disable"
         - name: JWT_SECRET
-          value: "vaiplaneta"
+          value: ${{ secrets.SECRET_KEY }}
     - name: shortb-web
       image: beyondtest/shortb-web:latest
       ports:
         - containerPort: 80
           hostPort: 80
-
