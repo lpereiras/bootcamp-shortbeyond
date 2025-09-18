@@ -1,0 +1,15 @@
+meta {
+  name: delete-links
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{localhost}}/links/{id}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

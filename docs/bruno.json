@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "short-beyond",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
