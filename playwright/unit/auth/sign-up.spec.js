@@ -16,4 +16,22 @@ test.describe('POST /auth/register', () => {
     expect(responseBody.user.name).toEqual(testUser.name);
     expect(responseBody.user.email).toEqual(testUser.email);
     });
+
+    test('should not register with email is already used', async ({request}) => {
+        await request.post('/api/auth/register', {
+            data: testUser
+        });
+
+        const response = await request.post('/api/auth/register', {
+            data: {
+                name: 'Valid User Name',
+                email: testUser.email,
+                password: testUser.password
+            }
+        });
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(400);
+        expect(responseBody).toHaveProperty('message', 'Este e-mail já está em uso. Por favor, tente outro.');
+    });
 });
