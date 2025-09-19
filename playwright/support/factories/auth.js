@@ -5,6 +5,7 @@ class AuthMessage {
     static REQUIRED_NAME = "O campo 'Name' é obrigatório"
     static REQUIRED_EMAIL = "O campo 'Email' é obrigatório"
     static REQUIRED_PASSWORD = "O campo 'Password' é obrigatório"
+    static LOGIN_SUCCESS = 'Login realizado com sucesso'
 }
 
 //response property type used on tests
@@ -12,5 +13,6 @@ class Type {
     static PASSWORD = 'password'
     static MESSAGE = 'message'
     static ID = 'id'
+    static TOKEN = 'token'
 }
 export { AuthMessage, Type }
