@@ -11,7 +11,7 @@ test.describe('POST /auth/register', () => {
 
     expect(response.status()).toBe(201);
     expect(responseBody.user).toHaveProperty('id');
-    expect(responseBody).toHaveProperty('message', AuthMessages.REGISTER_SUCCESS);
+    expect(responseBody).toHaveProperty(AuthMessages.MESSAGE, AuthMessages.REGISTER_SUCCESS);
     expect(responseBody.user).not.toHaveProperty('password');
     expect(responseBody.user.name).toEqual(testUser.name);
     expect(responseBody.user.email).toEqual(testUser.email);
@@ -32,7 +32,7 @@ test.describe('POST /auth/register', () => {
         const responseBody = await response.json();
 
         expect(response.status()).toBe(400);
-        expect(responseBody).toHaveProperty('message', AuthMessages.DUPLICATED_EMAIL);
+        expect(responseBody).toHaveProperty(AuthMessages.MESSAGE, AuthMessages.DUPLICATED_EMAIL);
     });
     
     test('should validate name as a required field', async ({request}) => {
@@ -44,7 +44,7 @@ test.describe('POST /auth/register', () => {
         });
         const responseBody = await response.json();
         expect(response.status()).toBe(400);
-        expect(responseBody).toHaveProperty('message', AuthMessages.REQUIRED_NAME );
+        expect(responseBody).toHaveProperty(AuthMessages.MESSAGE, AuthMessages.REQUIRED_NAME );
     });
 
     test('should validate email as a required field', async ({request}) => {
@@ -57,7 +57,7 @@ test.describe('POST /auth/register', () => {
         const responseBody = await response.json();
 
         expect(response.status()).toBe(400);
-        expect(responseBody).toHaveProperty('message', AuthMessages.REQUIRED_EMAIL);
+        expect(responseBody).toHaveProperty(AuthMessages.MESSAGE, AuthMessages.REQUIRED_EMAIL);
     });
 
     test('should validate password as a required field', async ({request}) => {
@@ -70,6 +70,6 @@ test.describe('POST /auth/register', () => {
         const responseBody = await response.json();
 
         expect(response.status()).toBe(400);
-        expect(responseBody).toHaveProperty('message', AuthMessages.REQUIRED_PASSWORD);
+        expect(responseBody).toHaveProperty(AuthMessages.MESSAGE, AuthMessages.REQUIRED_PASSWORD);
     });
 });
