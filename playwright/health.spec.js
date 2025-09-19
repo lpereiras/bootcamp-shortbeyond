@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('should verify the state of API', async ({ request }) => {
+test('GET /health', async ({ request }) => {
   const response = await request.get('/health');
   const responseBody = await response.json();
 
