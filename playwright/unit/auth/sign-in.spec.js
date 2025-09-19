@@ -6,7 +6,7 @@ import { AuthMessage, Type } from '../../support/factories/auth';
 test.describe('POST /auth/login', () => {
     test.beforeAll(async ({request}) => {
         await request.post(REGISTER_ROUTE, {
-                data: testUser
+            data: testUser
         })
     });
 
