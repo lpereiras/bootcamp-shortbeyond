@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { testUser } from '../../support/factories/testUser';
+import { testUser, testUser_1 } from '../../support/factories/testUser';
 import { AuthMessage, Type } from '../../support/factories/auth';
 import { REGISTER_ROUTE } from '../../support/apiRoutes'
 
 test.describe('POST /auth/register', () => {
     test('should register a new user', async ({ request }) => {
         const response = await request.post(REGISTER_ROUTE, {
-            data: testUser
+            data: testUser_1
         })
         const responseBody = await response.json();
 
@@ -14,11 +14,11 @@ test.describe('POST /auth/register', () => {
         expect(responseBody.user).toHaveProperty(Type.ID);
         expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REGISTER_SUCCESS);
         expect(responseBody.user).not.toHaveProperty(Type.PASSWORD);
-        expect(responseBody.user.name).toEqual(testUser.name);
-        expect(responseBody.user.email).toEqual(testUser.email);
+        expect(responseBody.user.name).toEqual(testUser_1.name);
+        expect(responseBody.user.email).toEqual(testUser_1.email);
     });
 
-    test('should not register with email is already used', async ({request}) => {
+    test('should not register when email is already used', async ({request}) => {
         await request.post(REGISTER_ROUTE, {
             data: testUser
         });
@@ -61,6 +61,20 @@ test.describe('POST /auth/register', () => {
         expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REQUIRED_EMAIL);
     });
 
+    test('should validate email format', async ({request}) => {
+        const response = await request.post(REGISTER_ROUTE, {
+            data: {
+                name: testUser.name,
+                email: 'invalid-formatgmail.com',
+                password: testUser.password
+            }
+        })
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(400);
+        expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_EMAIL_FORMAT)
+    });
+
     test('should validate password as a required field', async ({request}) => {
         const response = await request.post(REGISTER_ROUTE, {
             data: {
@@ -72,5 +86,29 @@ test.describe('POST /auth/register', () => {
 
         expect(response.status()).toBe(400);
         expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REQUIRED_PASSWORD);
+    });
+
+    test('should validate JSON format', async ({request}) => {
+        const response = await request.post(REGISTER_ROUTE, {
+            data: 'invalid-json-format'
+        })
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(400);
+        expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_DATA);
+    });
+
+    test('password should be at least 6 character long', async ({request}) => {
+        const response = await request.post(REGISTER_ROUTE, {
+            data: {
+                name: testUser.name,
+                email: testUser.email,
+                password: 'pwd'
+            }
+        });
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(400);
+        expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.SHORT_PASSWORD);
     });
 });
