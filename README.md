@@ -1,8 +1,8 @@
 # ShortB: API automation 
 
-## This automated testing project was design to test an Backend application that are responsible to shortener URL 
+## This automated testing project was design to test a Backend application that are responsible to shortener URL 
 
-### Build with
+### Build with:
 ![Playwright](https://img.shields.io/badge/-playwright-%232EAD33?style=for-the-badge&logo=playwright&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 ![Bruno](https://img.shields.io/badge/Bruno-F4AA41.svg?style=for-the-badge&logo=Bruno&logoColor=black)
