@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test'
 import { testUser, testUser_1 } from '../../support/factories/testUser'
-import { AuthMessage, Type } from '../../support/factories/auth'
+import { AuthMessage, Message } from '../../support/models/message'
+import { Type } from '../../support/models/type'
 import { REGISTER_ROUTE } from '../../support/apiRoutes'
 
 test.describe('POST /auth/register', () => {
-  test('should register a new user', async ({ request }) => {
+  test('SRB-001: CT-1', async ({ request }) => {
     const response = await request.post(REGISTER_ROUTE, {
       data: testUser_1,
     })
@@ -18,7 +19,7 @@ test.describe('POST /auth/register', () => {
     expect(responseBody.user.email).toEqual(testUser_1.email)
   })
 
-  test('should not register when email is already used', async ({ request }) => {
+  test('SRB-001: CT-2', async ({ request }) => {
     await request.post(REGISTER_ROUTE, {
       data: testUser,
     })
@@ -33,10 +34,10 @@ test.describe('POST /auth/register', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.DUPLICATED_EMAIL)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.DUPLICATED_EMAIL)
   })
 
-  test('should validate name as a required field', async ({ request }) => {
+  test('SRB-001: CT-3', async ({ request }) => {
     const response = await request.post(REGISTER_ROUTE, {
       data: {
         email: testUser.email,
@@ -45,10 +46,10 @@ test.describe('POST /auth/register', () => {
     })
     const responseBody = await response.json()
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REQUIRED_NAME)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_NAME)
   })
 
-  test('should validate email as a required field', async ({ request }) => {
+  test('SRB-001: CT-4', async ({ request }) => {
     const response = await request.post(REGISTER_ROUTE, {
       data: {
         name: testUser.name,
@@ -58,10 +59,10 @@ test.describe('POST /auth/register', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REQUIRED_EMAIL)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_EMAIL)
   })
 
-  test('should validate email format', async ({ request }) => {
+  test('SRB-001: CT-5', async ({ request }) => {
     const response = await request.post(REGISTER_ROUTE, {
       data: {
         name: testUser.name,
@@ -72,10 +73,10 @@ test.describe('POST /auth/register', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_EMAIL_FORMAT)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.INVALID_EMAIL_FORMAT)
   })
 
-  test('should validate password as a required field', async ({ request }) => {
+  test('SRB-001: CT-6', async ({ request }) => {
     const response = await request.post(REGISTER_ROUTE, {
       data: {
         name: testUser.name,
@@ -85,20 +86,20 @@ test.describe('POST /auth/register', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REQUIRED_PASSWORD)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_PASSWORD)
   })
 
-  test('should validate JSON format', async ({ request }) => {
+  test('SRB-001: CT-7', async ({ request }) => {
     const response = await request.post(REGISTER_ROUTE, {
       data: 'invalid-json-format',
     })
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_DATA)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.INVALID_DATA)
   })
 
-  test('password should be at least 6 character long', async ({ request }) => {
+  test('SRB-001: CT-8', async ({ request }) => {
     const response = await request.post(REGISTER_ROUTE, {
       data: {
         name: testUser.name,
@@ -109,6 +110,6 @@ test.describe('POST /auth/register', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.SHORT_PASSWORD)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.SHORT_PASSWORD)
   })
 })

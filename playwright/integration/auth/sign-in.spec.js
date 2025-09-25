@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test'
 import { LOGIN_ROUTE, REGISTER_ROUTE } from '../../support/apiRoutes'
 import { testUser } from '../../support/factories/testUser'
-import { AuthMessage, Type } from '../../support/factories/auth'
+import { AuthMessage, Message } from '../../support/models/message'
+import { Type } from '../../support/models/type'
 
 test.describe('POST /auth/login', () => {
   test.beforeAll(async ({ request }) => {
@@ -11,7 +12,7 @@ test.describe('POST /auth/login', () => {
     })
   })
 
-  test('should get access token with valid credential', async ({ request }) => {
+  test('SRB-002: CT-1', async ({ request }) => {
     const response = await request.post(LOGIN_ROUTE, {
       data: {
         email: testUser.email,
@@ -29,7 +30,7 @@ test.describe('POST /auth/login', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.LOGIN_SUCCESS)
   })
 
-  test('should validate if email matches a valid credential', async ({ request }) => {
+  test('SRB-002: CT-2', async ({ request }) => {
     const response = await request.post(LOGIN_ROUTE, {
       data: {
         email: 'not-registered-user@email.com',
@@ -41,7 +42,7 @@ test.describe('POST /auth/login', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_CREDENTIALS)
   })
 
-  test('should validate if password matches a valid credential', async ({ request }) => {
+  test('SRB-002: CT-3', async ({ request }) => {
     const response = await request.post(LOGIN_ROUTE, {
       data: {
         email: testUser.email,
@@ -53,7 +54,7 @@ test.describe('POST /auth/login', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_CREDENTIALS)
   })
 
-  test('should validate email as a required field', async ({ request }) => {
+  test('SRB-002: CT-4', async ({ request }) => {
     const response = await request.post(LOGIN_ROUTE, {
       data: {
         password: testUser.password,
@@ -61,10 +62,10 @@ test.describe('POST /auth/login', () => {
     })
     const responseBody = await response.json()
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REQUIRED_EMAIL)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_EMAIL)
   })
 
-  test('should validate email format', async ({ request }) => {
+  test('SRB-002: CT-5', async ({ request }) => {
     const response = await request.post(LOGIN_ROUTE, {
       data: {
         email: 'invalid-formatgmail.com',
@@ -74,10 +75,10 @@ test.describe('POST /auth/login', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_EMAIL_FORMAT)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.INVALID_EMAIL_FORMAT)
   })
 
-  test('should validate password as a required field', async ({ request }) => {
+  test('SRB-002: CT-6', async ({ request }) => {
     const response = await request.post(LOGIN_ROUTE, {
       data: {
         email: testUser.email,
@@ -86,16 +87,16 @@ test.describe('POST /auth/login', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.REQUIRED_PASSWORD)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_PASSWORD)
   })
 
-  test('should validate JSON format', async ({ request }) => {
+  test('SRB-002: CT-7', async ({ request }) => {
     const response = await request.post(LOGIN_ROUTE, {
       data: 'invalid-json-format',
     })
     const responseBody = await response.json()
 
     expect(response.status()).toBe(400)
-    expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_DATA)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, Message.INVALID_DATA)
   })
 })

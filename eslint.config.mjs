@@ -4,7 +4,7 @@ import { defineConfig } from 'eslint/config'
 import stylistic from '@stylistic/eslint-plugin'
 
 export default defineConfig([
-  { files: ['**/*.{js}'],
+  { files: ['playwright/*.{js}'],
     languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   stylistic.configs.recommended,
