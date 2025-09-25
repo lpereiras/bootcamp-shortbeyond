@@ -1,11 +1,11 @@
 meta {
-  name: delete-links
+  name: link-list
   type: http
-  seq: 3
+  seq: 2
 }
 
-delete {
-  url: {{localhost}}/links/{id}
+get {
+  url: {{localhost}}/links
   body: none
   auth: inherit
 }
