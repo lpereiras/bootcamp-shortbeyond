@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test'
 import { LOGIN_ROUTE, REGISTER_ROUTE } from '../../support/apiRoutes'
 import { testUser } from '../../support/factories/testUser'
-import { AuthMessage, Message } from '../../support/models/message'
-import { Type } from '../../support/models/type'
+import { AuthMessage, Message } from '../../support/models/apiMessages'
+import { Type } from '../../support/models/apiTypes'
 
 test.describe('POST /auth/login', () => {
   test.beforeAll(async ({ request }) => {

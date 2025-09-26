@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { testUser, testUser_1 } from '../../support/factories/testUser'
-import { AuthMessage, Message } from '../../support/models/message'
-import { Type } from '../../support/models/type'
+import { AuthMessage, Message } from '../../support/models/apiMessages'
+import { Type } from '../../support/models/apiTypes'
 import { REGISTER_ROUTE } from '../../support/apiRoutes'
 
 test.describe('POST /auth/register', () => {
