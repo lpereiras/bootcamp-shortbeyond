@@ -1,15 +1,22 @@
 import { authService } from '../../support/services/auth'
-import { REGISTER_ROUTE } from '../../support/apiRoutes'
+import { LinkMessage } from '../../support/models/apiMessages'
+import { LOGIN_ROUTE, REGISTER_ROUTE } from '../../support/apiRoutes'
 import { test, expect } from '@playwright/test'
 import { testUser } from '../../support/factories/testUser'
 import { testLink } from '../../support/factories/testLink'
+import { Type } from '../../support/models/apiTypes'
 
 test.describe('POST /links', () => {
-  test('SRB-003: CT-1', async ({ request }) => {
+  test.beforeAll(async ({ request }) => {
+    // TODO 
+    // implement verification to check if user exist at database
+    // if exist skip post to register endpoint
     await request.post(REGISTER_ROUTE, {
-      data: testUser
+      data: testUser,
     })
+  })
 
+  test('SRB-003: CT-1', async ({ request }) => {
     const validLogin = authService(request)
     const getToken = await validLogin.getToken(testUser)
     const response = await request.post('/api/links', {
@@ -21,14 +28,43 @@ test.describe('POST /links', () => {
     const responseBody = await response.json()
 
     expect(response.status()).toBe(201)
-    expect(responseBody.data).toHaveProperty('id')
-    expect(responseBody.data).toHaveProperty('original_url')
-    expect(responseBody.data).toHaveProperty('short_code')
-    expect(responseBody.data).toHaveProperty('title')
-    expect(responseBody).toHaveProperty('message', 'Link criado com sucesso')
+    expect(responseBody.data).toHaveProperty(Type.ID)
+    expect(responseBody.data.original_url).toEqual(testLink.original_url)
+    expect(responseBody.data).toHaveProperty(Type.SHORT_CODE)
+    expect(responseBody.data.title).toEqual(testLink.title)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, LinkMessage.CREATED)
+  })
+
+  test('SRB-003: CT-2', async ({ request }) => {
+    await authService(request).login(testUser)
+
+    const response = await request.post('/api/links', {
+      headers: {
+        Invalid: 'Bearer invalid',
+      },
+      data: testLink,
+    })
+    const responseBody = await response.json()
+
+    expect(response.status()).toBe(401)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, LinkMessage.REQUIRED_HEADER)
+  })
+
+  test('SRB-003: CT-3', async ({ request }) => {
+    await authService(request).login(testUser)
+
+    const response = await request.post('/api/links', {
+      headers: {
+        Authorization: 'Invalid',
+      },
+      data: testLink,
+    })
+    const responseBody = await response.json()
+
+    expect(response.status()).toBe(401)
+    expect(responseBody).toHaveProperty(Type.MESSAGE, LinkMessage.INVALID_TOKEN_FORMAT)
   })
   // TODO
-  // needs authentication token
   // needs to be Bearer token
   // have to be a valid and non expired token
   // have to be a valid user

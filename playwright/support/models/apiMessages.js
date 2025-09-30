@@ -16,4 +16,11 @@ class AuthMessage {
   static INVALID_CREDENTIALS = 'Credenciais inválidas'
 }
 
-export { AuthMessage, Message }
+// responses from POST/links
+class LinkMessage {
+  static CREATED = 'Link criado com sucesso'
+  static REQUIRED_HEADER = 'Header Authorization é obrigatório'
+  static INVALID_TOKEN_FORMAT = 'Use o formato: Bearer <token>'
+}
+
+export { AuthMessage, LinkMessage, Message }

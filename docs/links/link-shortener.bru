@@ -5,15 +5,17 @@ meta {
 }
 
 post {
-  url: {{localhost}}/links
+  url: {{localhost}}/api/links
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "original_url": "url_that_have_to_be_shorter.long-url",
-    "title": "str"
+  
+      "original_url": "https://remorseful-ectoderm.org/teste/integration",
+      "title": "Multirão ao amor (part. Zeca Pagodinho)"
+  
   }
 }
 

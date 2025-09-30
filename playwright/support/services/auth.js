@@ -3,10 +3,10 @@ import { LOGIN_ROUTE } from '../../support/apiRoutes'
 export const authService = (request) => {
   const login = async (testUser) => {
     return await request.post(LOGIN_ROUTE, {
-        data: {
-          email: testUser.email,
-          password: testUser.password,
-      }
+      data: {
+        email: testUser.email,
+        password: testUser.password,
+      },
     })
   }
 

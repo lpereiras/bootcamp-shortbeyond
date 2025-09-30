@@ -4,6 +4,7 @@ class Type {
   static TOKEN = 'token'
   static MESSAGE = 'message'
   static PASSWORD = 'password'
+  static SHORT_CODE = 'short_code'
 }
 
 export { Type }
