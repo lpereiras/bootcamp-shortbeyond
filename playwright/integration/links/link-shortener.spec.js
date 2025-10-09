@@ -10,7 +10,7 @@ test.describe('POST /links', () => {
   test.beforeAll(async ({ request }) => {
     // TODO 
     // implement verification to check if user exist at database
-    // if exist skip post to register endpoint
+    // if exist skip request to register endpoint
     await request.post(REGISTER_ROUTE, {
       data: testUser,
     })
@@ -65,7 +65,6 @@ test.describe('POST /links', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, LinkMessage.INVALID_TOKEN_FORMAT)
   })
   // TODO
-  // needs to be Bearer token
   // have to be a valid and non expired token
   // have to be a valid user
   // have to be a valid URL

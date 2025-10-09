@@ -17,6 +17,8 @@
     "pl:ui": "npx playwright test --ui",
     "pl:report": "npx playwright show-report",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "pod:start": "podman pod start shortbeyond",
+    "pod:stop": "podman pod stop shortbeyond"
   }
 }
