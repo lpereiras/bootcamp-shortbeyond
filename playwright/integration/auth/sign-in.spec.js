@@ -6,7 +6,7 @@ import { Type } from '../../support/models/apiTypes'
 
 test.describe('POST /auth/login', () => {
   test.beforeAll(async ({ request }) => {
-    // TODO 
+    // TODO
     // implement verification to check if user exist at database
     // if exist skip request to register endpoint
     await request.post(REGISTER_ROUTE, {
