@@ -5,6 +5,9 @@ import { AuthMessage, Message } from '../../support/models/apiMessages'
 import { Type } from '../../support/models/apiTypes'
 
 test.describe('POST /auth/login', () => {
+  let response
+  let responseBody
+
   test.beforeAll(async ({ request }) => {
     // TODO
     // implement verification to check if user exist at database
@@ -15,13 +18,13 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-1', async ({ request }) => {
-    const response = await request.post(LOGIN_ROUTE, {
+    response = await request.post(LOGIN_ROUTE, {
       data: {
         email: testUser.email,
         password: testUser.password,
       },
     })
-    const responseBody = await response.json()
+    responseBody = await response.json()
 
     expect(response.status()).toBe(200)
     expect(responseBody).not.toHaveProperty(Type.PASSWORD)
@@ -33,70 +36,73 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-2', async ({ request }) => {
-    const response = await request.post(LOGIN_ROUTE, {
+    response = await request.post(LOGIN_ROUTE, {
       data: {
         email: 'not-registered-user@email.com',
         password: testUser.password,
       },
     })
-    const responseBody = await response.json()
+    responseBody = await response.json()
+
     expect(response.status()).toBe(401)
     expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_CREDENTIALS)
   })
 
   test('SRB-002: CT-3', async ({ request }) => {
-    const response = await request.post(LOGIN_ROUTE, {
+    response = await request.post(LOGIN_ROUTE, {
       data: {
         email: testUser.email,
         password: 'invalid-password-credential',
       },
     })
-    const responseBody = await response.json()
+    responseBody = await response.json()
+
     expect(response.status()).toBe(401)
     expect(responseBody).toHaveProperty(Type.MESSAGE, AuthMessage.INVALID_CREDENTIALS)
   })
 
   test('SRB-002: CT-4', async ({ request }) => {
-    const response = await request.post(LOGIN_ROUTE, {
+    response = await request.post(LOGIN_ROUTE, {
       data: {
         password: testUser.password,
       },
     })
-    const responseBody = await response.json()
+    responseBody = await response.json()
+
     expect(response.status()).toBe(400)
     expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_EMAIL)
   })
 
   test('SRB-002: CT-5', async ({ request }) => {
-    const response = await request.post(LOGIN_ROUTE, {
+    response = await request.post(LOGIN_ROUTE, {
       data: {
         email: 'invalid-formatgmail.com',
         password: testUser.password,
       },
     })
-    const responseBody = await response.json()
+    responseBody = await response.json()
 
     expect(response.status()).toBe(400)
     expect(responseBody).toHaveProperty(Type.MESSAGE, Message.INVALID_EMAIL_FORMAT)
   })
 
   test('SRB-002: CT-6', async ({ request }) => {
-    const response = await request.post(LOGIN_ROUTE, {
+    response = await request.post(LOGIN_ROUTE, {
       data: {
         email: testUser.email,
       },
     })
-    const responseBody = await response.json()
+    responseBody = await response.json()
 
     expect(response.status()).toBe(400)
     expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_PASSWORD)
   })
 
   test('SRB-002: CT-7', async ({ request }) => {
-    const response = await request.post(LOGIN_ROUTE, {
+    response = await request.post(LOGIN_ROUTE, {
       data: 'invalid-json-format',
     })
-    const responseBody = await response.json()
+    responseBody = await response.json()
 
     expect(response.status()).toBe(400)
     expect(responseBody).toHaveProperty(Type.MESSAGE, Message.INVALID_DATA)
