@@ -1,10 +1,10 @@
 import { authService } from '../../support/services/auth'
 import { LinkMessage } from '../../support/models/apiMessages'
-import { REGISTER_ROUTE } from '../../support/apiRoutes'
 import { test, expect } from '@playwright/test'
 import { testUser } from '../../support/factories/testUser'
 import { testLink } from '../../support/factories/testLink'
 import { Type } from '../../support/models/apiTypes'
+import { linkService } from '../../support/services/link'
 
 test.describe('POST /links', () => {
   let validLogin
@@ -12,24 +12,23 @@ test.describe('POST /links', () => {
   let response
   let responseBody
 
-  test.beforeEach(async ({ request }) => {
+  test.beforeAll(async ({ request }) => {
     // TODO
     // implement verification to check if user exist at database
     // if exist skip request to register endpoint
-    await request.post(REGISTER_ROUTE, {
-      data: testUser,
-    })
+    await authService(request).register(
+      testUser,
+    )
   })
 
   test('SRB-003: CT-1', async ({ request }) => {
     validLogin = authService(request)
     getToken = await validLogin.getToken(testUser)
 
-    response = await request.post('/api/links', {
-      headers: {
-        Authorization: `Bearer ${getToken}`,
-      },
-      data: testLink,
+    response = await linkService(request).register({
+      token: `Bearer ${getToken}`,
+      original_URL: testLink.original_URL,
+      title: testLink.title
     })
     responseBody = await response.json()
 
@@ -44,11 +43,12 @@ test.describe('POST /links', () => {
   test('SRB-003: CT-2', async ({ request }) => {
     await authService(request).login(testUser)
 
-    response = await request.post('/api/links', {
+    response = await linkService(request).register({  
       headers: {
         Invalid: 'Bearer invalid',
       },
-      data: testLink,
+      original_URL: testLink.original_URL,
+      title: testLink.title  
     })
     responseBody = await response.json()
 
@@ -59,11 +59,10 @@ test.describe('POST /links', () => {
   test('SRB-003: CT-3', async ({ request }) => {
     await authService(request).login(testUser)
 
-    response = await request.post('/api/links', {
-      headers: {
-        Authorization: 'Invalid',
-      },
-      data: testLink,
+    response = await linkService(request).register({
+      token: 'Invalid',
+      original_URL: testLink.original_URL,
+      title: testLink.title
     })
     responseBody = await response.json()
 
@@ -73,11 +72,11 @@ test.describe('POST /links', () => {
 
   test('SRB-003: CT-04', async ({ request }) => {
     await authService(request).login(testUser)
-    response = await request.post('/api/links', {
-      headers: {
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFLNUY2RDNIN0NQTjJBUURLSlgwSjE3VjUiLCJleHAiOjE3NTgzMTI0MzQsImlhdCI6MTc1ODIyNjAzNH0.vsWnxM3gTL-XWfsQ6WwaIcOhC1iVmbS8cVYNgXWaRDs',
-      },
-      data: testLink,
+    
+    response = await linkService(request).register({
+      token: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFLNUY2RDNIN0NQTjJBUURLSlgwSjE3VjUiLCJleHAiOjE3NTgzMTI0MzQsImlhdCI6MTc1ODIyNjAzNH0.vsWnxM3gTL-XWfsQ6WwaIcOhC1iVmbS8cVYNgXWaRDs ',
+      original_URL: testLink.original_URL,
+      title: testLink.title
     })
     responseBody = await response.json()
 
@@ -89,13 +88,9 @@ test.describe('POST /links', () => {
     validLogin = authService(request)
     getToken = await validLogin.getToken(testUser)
 
-    response = await request.post('/api/links', {
-      headers: {
-        Authorization: `Bearer ${getToken}`,
-      },
-      data: {
-        title: testLink.title,
-      },
+    response = await linkService(request).register({
+      token: `Bearer ${getToken}`,
+      title: testLink.title
     })
     responseBody = await response.json()
 
@@ -107,13 +102,9 @@ test.describe('POST /links', () => {
     validLogin = authService(request)
     getToken = await validLogin.getToken(testUser)
 
-    response = await request.post('/api/links', {
-      headers: {
-        Authorization: `Bearer ${getToken}`,
-      },
-      data: {
-        original_URL: testLink.original_URL,
-      },
+    response = await linkService(request).register({
+      token: `Bearer ${getToken}`,
+      original_URL: testLink.original_URL
     })
     responseBody = await response.json()
 
@@ -125,14 +116,10 @@ test.describe('POST /links', () => {
     validLogin = authService(request)
     getToken = await validLogin.getToken(testUser)
 
-    response = await request.post('/api/links', {
-      headers: {
-        Authorization: `Bearer ${getToken}`,
-      },
-      data: {
-        original_URL: 'invalid_url',
-        title: testLink.title,
-      },
+    response = await linkService(request).register({
+      token: `Bearer ${getToken}`,
+      original_URL: 'invalid_url',
+      title: testLink.title
     })
     responseBody = await response.json()
 

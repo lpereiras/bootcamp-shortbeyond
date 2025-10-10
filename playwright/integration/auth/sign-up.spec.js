@@ -3,15 +3,16 @@ import { testUser, testUser_1 } from '../../support/factories/testUser'
 import { AuthMessage, Message } from '../../support/models/apiMessages'
 import { Type } from '../../support/models/apiTypes'
 import { REGISTER_ROUTE } from '../../support/apiRoutes'
+import { authService } from '../../support/services/auth'
 
 test.describe('POST /auth/register', () => {
   let response
   let responseBody
 
   test('SRB-001: CT-1', async ({ request }) => {
-    response = await request.post(REGISTER_ROUTE, {
-      data: testUser_1,
-    })
+    response = await authService(request).register(
+      testUser_1,
+    )
     responseBody = await response.json()
 
     expect(response.status()).toBe(201)
@@ -23,16 +24,14 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-2', async ({ request }) => {
-    await request.post(REGISTER_ROUTE, {
-      data: testUser,
-    })
+    await authService(request).register(
+      testUser,
+    )
 
-    response = await request.post(REGISTER_ROUTE, {
-      data: {
-        name: 'Valid User Name',
-        email: testUser.email,
-        password: testUser.password,
-      },
+    response = await authService(request).register({
+      name: 'Valid User Name',
+      email: testUser.email,
+      password: testUser.password,
     })
     responseBody = await response.json()
 
@@ -41,23 +40,20 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-3', async ({ request }) => {
-    response = await request.post(REGISTER_ROUTE, {
-      data: {
-        email: testUser.email,
-        password: testUser.password,
-      },
+    response = await authService(request).register({
+      email: testUser.email,
+      password: testUser.password,
     })
+
     responseBody = await response.json()
     expect(response.status()).toBe(400)
     expect(responseBody).toHaveProperty(Type.MESSAGE, Message.REQUIRED_NAME)
   })
 
   test('SRB-001: CT-4', async ({ request }) => {
-    response = await request.post(REGISTER_ROUTE, {
-      data: {
-        name: testUser.name,
-        password: testUser.password,
-      },
+    response = await authService(request).register({
+      name: testUser.name,
+      password: testUser.password,
     })
     responseBody = await response.json()
 
@@ -66,12 +62,10 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-5', async ({ request }) => {
-    response = await request.post(REGISTER_ROUTE, {
-      data: {
-        name: testUser.name,
-        email: 'invalid-formatgmail.com',
-        password: testUser.password,
-      },
+    response = await authService(request).register({
+      name: testUser.name,
+      email: 'invalid-formatgmail.com',
+      password: testUser.password,
     })
     responseBody = await response.json()
 
@@ -80,11 +74,9 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-6', async ({ request }) => {
-    response = await request.post(REGISTER_ROUTE, {
-      data: {
-        name: testUser.name,
-        email: testUser.email,
-      },
+    response = await authService(request).register({
+      name: testUser.name,
+      email: testUser.email,
     })
     responseBody = await response.json()
 
@@ -103,12 +95,10 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-8', async ({ request }) => {
-    response = await request.post(REGISTER_ROUTE, {
-      data: {
-        name: testUser.name,
-        email: testUser.email,
-        password: 'pwd',
-      },
+    response = await authService(request).register({
+      name: testUser.name,
+      email: testUser.email,
+      password: 'pwd',
     })
     responseBody = await response.json()
 

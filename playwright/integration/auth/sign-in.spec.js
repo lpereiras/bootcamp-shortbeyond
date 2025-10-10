@@ -3,6 +3,7 @@ import { LOGIN_ROUTE, REGISTER_ROUTE } from '../../support/apiRoutes'
 import { testUser } from '../../support/factories/testUser'
 import { AuthMessage, Message } from '../../support/models/apiMessages'
 import { Type } from '../../support/models/apiTypes'
+import { authService } from '../../support/services/auth'
 
 test.describe('POST /auth/login', () => {
   let response
@@ -12,17 +13,15 @@ test.describe('POST /auth/login', () => {
     // TODO
     // implement verification to check if user exist at database
     // if exist skip request to register endpoint
-    await request.post(REGISTER_ROUTE, {
-      data: testUser,
-    })
+    await authService(request).register(
+      testUser,
+    )
   })
 
   test('SRB-002: CT-1', async ({ request }) => {
-    response = await request.post(LOGIN_ROUTE, {
-      data: {
-        email: testUser.email,
-        password: testUser.password,
-      },
+    response = await authService(request).login({
+      email: testUser.email,
+      password: testUser.password,
     })
     responseBody = await response.json()
 
@@ -36,11 +35,9 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-2', async ({ request }) => {
-    response = await request.post(LOGIN_ROUTE, {
-      data: {
-        email: 'not-registered-user@email.com',
-        password: testUser.password,
-      },
+    response = await authService(request).login({
+      email: 'not-registered-user@email.com',
+      password: testUser.password,
     })
     responseBody = await response.json()
 
@@ -49,11 +46,10 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-3', async ({ request }) => {
-    response = await request.post(LOGIN_ROUTE, {
-      data: {
-        email: testUser.email,
-        password: 'invalid-password-credential',
-      },
+    response = await authService(request).login({
+      email: testUser.email,
+      password: 'invalid-password-credential',
+
     })
     responseBody = await response.json()
 
@@ -62,10 +58,9 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-4', async ({ request }) => {
-    response = await request.post(LOGIN_ROUTE, {
-      data: {
-        password: testUser.password,
-      },
+    response = await authService(request).login({
+      email: '',
+      password: testUser.password,
     })
     responseBody = await response.json()
 
@@ -74,11 +69,9 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-5', async ({ request }) => {
-    response = await request.post(LOGIN_ROUTE, {
-      data: {
-        email: 'invalid-formatgmail.com',
-        password: testUser.password,
-      },
+    response = await authService(request).login({
+      email: 'invalid-formatgmail.com',
+      password: testUser.password,
     })
     responseBody = await response.json()
 
@@ -87,10 +80,9 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-6', async ({ request }) => {
-    response = await request.post(LOGIN_ROUTE, {
-      data: {
-        email: testUser.email,
-      },
+    response = await authService(request).login({
+      email: testUser.email,
+      password: '',
     })
     responseBody = await response.json()
 

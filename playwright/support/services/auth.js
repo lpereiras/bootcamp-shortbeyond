@@ -1,11 +1,21 @@
-import { LOGIN_ROUTE } from '../../support/apiRoutes'
+import { LOGIN_ROUTE, REGISTER_ROUTE } from '../../support/apiRoutes'
 
 export const authService = (request) => {
-  const login = async (testUser) => {
+  const register = async (user) => {
+    return await request.post(REGISTER_ROUTE, {
+      data: {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      },
+    })
+  }
+
+  const login = async (user) => {
     return await request.post(LOGIN_ROUTE, {
       data: {
-        email: testUser.email,
-        password: testUser.password,
+        email: user.email,
+        password: user.password,
       },
     })
   }
@@ -17,5 +27,5 @@ export const authService = (request) => {
     return responseBody.data.token
   }
 
-  return { login, getToken }
+  return { login, register, getToken }
 }
