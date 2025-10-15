@@ -8,11 +8,14 @@ import { authService } from '../../support/services/auth'
 test.describe('POST /auth/register', () => {
   let response
   let responseBody
+  let auth
+
+  test.beforeEach(async ({ request }) => {
+    auth = authService(request)
+  })
 
   test('SRB-001: CT-1', async ({ request }) => {
-    response = await authService(request).register(
-      testUser_1,
-    )
+    response = await auth.register(testUser_1)
     responseBody = await response.json()
 
     expect(response.status()).toBe(201)
@@ -24,11 +27,9 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-2', async ({ request }) => {
-    await authService(request).register(
-      testUser,
-    )
+    await auth.register(testUser)
 
-    response = await authService(request).register({
+    response = await auth.register({
       name: 'Valid User Name',
       email: testUser.email,
       password: testUser.password,
@@ -40,7 +41,7 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-3', async ({ request }) => {
-    response = await authService(request).register({
+    response = await auth.register({
       email: testUser.email,
       password: testUser.password,
     })
@@ -51,7 +52,7 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-4', async ({ request }) => {
-    response = await authService(request).register({
+    response = await auth.register({
       name: testUser.name,
       password: testUser.password,
     })
@@ -62,7 +63,7 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-5', async ({ request }) => {
-    response = await authService(request).register({
+    response = await auth.register({
       name: testUser.name,
       email: 'invalid-formatgmail.com',
       password: testUser.password,
@@ -74,7 +75,7 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-6', async ({ request }) => {
-    response = await authService(request).register({
+    response = await auth.register({
       name: testUser.name,
       email: testUser.email,
     })
@@ -95,7 +96,7 @@ test.describe('POST /auth/register', () => {
   })
 
   test('SRB-001: CT-8', async ({ request }) => {
-    response = await authService(request).register({
+    response = await auth.register({
       name: testUser.name,
       email: testUser.email,
       password: 'pwd',

@@ -6,20 +6,21 @@ import { Type } from '../../support/models/apiTypes'
 import { authService } from '../../support/services/auth'
 
 test.describe('POST /auth/login', () => {
+  let auth
   let response
   let responseBody
 
-  test.beforeAll(async ({ request }) => {
+  test.beforeEach(async ({ request }) => {
     // TODO
     // implement verification to check if user exist at database
     // if exist skip request to register endpoint
-    await authService(request).register(
-      testUser,
-    )
+    auth = authService(request)
+
+    await auth.register(testUser)
   })
 
   test('SRB-002: CT-1', async ({ request }) => {
-    response = await authService(request).login({
+    response = await auth.login({
       email: testUser.email,
       password: testUser.password,
     })
@@ -35,7 +36,7 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-2', async ({ request }) => {
-    response = await authService(request).login({
+    response = await auth.login({
       email: 'not-registered-user@email.com',
       password: testUser.password,
     })
@@ -46,7 +47,7 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-3', async ({ request }) => {
-    response = await authService(request).login({
+    response = await auth.login({
       email: testUser.email,
       password: 'invalid-password-credential',
 
@@ -58,7 +59,7 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-4', async ({ request }) => {
-    response = await authService(request).login({
+    response = await auth.login({
       email: '',
       password: testUser.password,
     })
@@ -69,7 +70,7 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-5', async ({ request }) => {
-    response = await authService(request).login({
+    response = await auth.login({
       email: 'invalid-formatgmail.com',
       password: testUser.password,
     })
@@ -80,7 +81,7 @@ test.describe('POST /auth/login', () => {
   })
 
   test('SRB-002: CT-6', async ({ request }) => {
-    response = await authService(request).login({
+    response = await auth.login({
       email: testUser.email,
       password: '',
     })

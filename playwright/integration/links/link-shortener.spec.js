@@ -7,25 +7,25 @@ import { Type } from '../../support/models/apiTypes'
 import { linkService } from '../../support/services/link'
 
 test.describe('POST /links', () => {
-  let validLogin
+  let auth 
+  let link
   let getToken
   let response
   let responseBody
 
-  test.beforeAll(async ({ request }) => {
+  test.beforeEach(async ({ request }) => {
     // TODO
     // implement verification to check if user exist at database
     // if exist skip request to register endpoint
-    await authService(request).register(
-      testUser,
-    )
+    auth = authService(request)
+    link = linkService(request)
+
+    await auth.register(testUser)
+    getToken = await auth.getToken(testUser)
   })
 
   test('SRB-003: CT-1', async ({ request }) => {
-    validLogin = authService(request)
-    getToken = await validLogin.getToken(testUser)
-
-    response = await linkService(request).register({
+    response = await link.register({
       token: `Bearer ${getToken}`,
       original_URL: testLink.original_URL,
       title: testLink.title
@@ -41,9 +41,9 @@ test.describe('POST /links', () => {
   })
 
   test('SRB-003: CT-2', async ({ request }) => {
-    await authService(request).login(testUser)
+    await auth.login(testUser)
 
-    response = await linkService(request).register({  
+    response = await link.register({  
       headers: {
         Invalid: 'Bearer invalid',
       },
@@ -57,9 +57,9 @@ test.describe('POST /links', () => {
   })
 
   test('SRB-003: CT-3', async ({ request }) => {
-    await authService(request).login(testUser)
+    await auth.login(testUser)
 
-    response = await linkService(request).register({
+    response = await link.register({
       token: 'Invalid',
       original_URL: testLink.original_URL,
       title: testLink.title
@@ -71,9 +71,12 @@ test.describe('POST /links', () => {
   })
 
   test('SRB-003: CT-04', async ({ request }) => {
-    await authService(request).login(testUser)
+    await auth.login(testUser)
     
-    response = await linkService(request).register({
+    response = await link.register({
+      // TODO
+      // implement expired token as enviroment variable
+      // for better security practices
       token: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFLNUY2RDNIN0NQTjJBUURLSlgwSjE3VjUiLCJleHAiOjE3NTgzMTI0MzQsImlhdCI6MTc1ODIyNjAzNH0.vsWnxM3gTL-XWfsQ6WwaIcOhC1iVmbS8cVYNgXWaRDs ',
       original_URL: testLink.original_URL,
       title: testLink.title
@@ -85,10 +88,7 @@ test.describe('POST /links', () => {
   })
 
   test('SRB-003: CT-05', async ({ request }) => {
-    validLogin = authService(request)
-    getToken = await validLogin.getToken(testUser)
-
-    response = await linkService(request).register({
+    response = await link.register({
       token: `Bearer ${getToken}`,
       title: testLink.title
     })
@@ -99,10 +99,7 @@ test.describe('POST /links', () => {
   })
 
   test('SRB-003: CT-06', async ({ request }) => {
-    validLogin = authService(request)
-    getToken = await validLogin.getToken(testUser)
-
-    response = await linkService(request).register({
+    response = await link.register({
       token: `Bearer ${getToken}`,
       original_URL: testLink.original_URL
     })
@@ -113,10 +110,7 @@ test.describe('POST /links', () => {
   })
 
   test('SRB-003: CT-07', async ({ request }) => {
-    validLogin = authService(request)
-    getToken = await validLogin.getToken(testUser)
-
-    response = await linkService(request).register({
+    response = await link.register({
       token: `Bearer ${getToken}`,
       original_URL: 'invalid_url',
       title: testLink.title
