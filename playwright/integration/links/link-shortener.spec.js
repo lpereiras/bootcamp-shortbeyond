@@ -24,7 +24,7 @@ test.describe('POST /links', () => {
     getToken = await auth.getToken(testUser)
   })
 
-  test('SRB-003: CT-1', async ({ request }) => {
+  test('SRB-003: CT-1', async () => {
     response = await link.register({
       token: `Bearer ${getToken}`,
       original_URL: testLink.original_URL,
@@ -40,7 +40,7 @@ test.describe('POST /links', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, LinkMessage.CREATED)
   })
 
-  test('SRB-003: CT-2', async ({ request }) => {
+  test('SRB-003: CT-2', async () => {
     await auth.login(testUser)
 
     response = await link.register({  
@@ -56,7 +56,7 @@ test.describe('POST /links', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, LinkMessage.REQUIRED_HEADER)
   })
 
-  test('SRB-003: CT-3', async ({ request }) => {
+  test('SRB-003: CT-3', async () => {
     await auth.login(testUser)
 
     response = await link.register({
@@ -70,7 +70,7 @@ test.describe('POST /links', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, LinkMessage.INVALID_TOKEN_FORMAT)
   })
 
-  test('SRB-003: CT-04', async ({ request }) => {
+  test('SRB-003: CT-04', async () => {
     await auth.login(testUser)
     
     response = await link.register({
@@ -87,7 +87,7 @@ test.describe('POST /links', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, 'token has invalid claims: token is expired')
   })
 
-  test('SRB-003: CT-05', async ({ request }) => {
+  test('SRB-003: CT-05', async () => {
     response = await link.register({
       token: `Bearer ${getToken}`,
       title: testLink.title
@@ -98,7 +98,7 @@ test.describe('POST /links', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, 'O campo \'OriginalURL\' é obrigatório')
   })
 
-  test('SRB-003: CT-06', async ({ request }) => {
+  test('SRB-003: CT-06', async () => {
     response = await link.register({
       token: `Bearer ${getToken}`,
       original_URL: testLink.original_URL
@@ -109,7 +109,7 @@ test.describe('POST /links', () => {
     expect(responseBody).toHaveProperty(Type.MESSAGE, 'O campo \'Title\' é obrigatório')
   })
 
-  test('SRB-003: CT-07', async ({ request }) => {
+  test('SRB-003: CT-07', async () => {
     response = await link.register({
       token: `Bearer ${getToken}`,
       original_URL: 'invalid_url',
